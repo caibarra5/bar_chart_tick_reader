@@ -13,11 +13,13 @@ from pymdp.agent import Agent
 from module_aif_bar_reader.env import (
     BarChartEnv,
     NULL,
-    IN_BIN,
-    OUT_BIN,
+    BELOW,
+    IN,
+    ABOVE,
     NOT_CLOSE_AT_ALL,
     VERY_CLOSE,
 )
+
 
 
 from module_aif_bar_reader.generate_model_ABCD_params import (
@@ -74,9 +76,14 @@ def interpret_obs(obs):
     o0, o1, o2 = obs
 
     def region(x):
-        if x == NULL: return "NULL"
-        if x == IN_BIN: return "IN_BIN"
-        if x == OUT_BIN: return "OUT_BIN"
+        if x == NULL:
+            return "NULL"
+        if x == BELOW:
+            return "BELOW"
+        if x == IN:
+            return "IN"
+        if x == ABOVE:
+            return "ABOVE"
         return str(x)
 
     return (
@@ -84,6 +91,7 @@ def interpret_obs(obs):
         f"o1(bar2_query)={region(o1)}, "
         f"o2(feedback)={feedback_to_str(o2)}"
     )
+
 
 
 # -------------------------------------------------
@@ -345,13 +353,54 @@ def main():
         "report_choice",
     ]
 
-    for f, name in enumerate(state_names):
-        save_heatmap_time_state(
-            qs_over_time[f],
-            env,
-            HEATMAP_DIR / f"{name}_time_heatmap.png",
-            title=f"q({name}) over time",
-        )
+    # Bar height states use value-mapped heatmap
+    save_heatmap_time_state(
+        qs_over_time[0],
+        env,
+        HEATMAP_DIR / "bar1_fine_time_heatmap.png",
+        title="q(bar1_fine) over time",
+    )
+
+    save_heatmap_time_state(
+        qs_over_time[1],
+        env,
+        HEATMAP_DIR / "bar2_fine_time_heatmap.png",
+        title="q(bar2_fine) over time",
+    )
+
+    # The remaining factors are categorical
+    def save_categorical_heatmap(qs_over_time, outpath, title):
+        M = np.stack(qs_over_time, axis=1)
+        outpath.parent.mkdir(parents=True, exist_ok=True)
+
+        plt.figure(figsize=(8,5))
+        plt.imshow(M, aspect="auto", origin="lower")
+        plt.colorbar(label="probability")
+        plt.xlabel("time")
+        plt.ylabel("state index")
+        plt.title(title)
+        plt.tight_layout()
+        plt.savefig(outpath, dpi=200)
+        plt.close()
+
+    save_categorical_heatmap(
+        qs_over_time[2],
+        HEATMAP_DIR / "attention_time_heatmap.png",
+        "q(attention) over time",
+    )
+
+    save_categorical_heatmap(
+        qs_over_time[3],
+        HEATMAP_DIR / "coarse_query_time_heatmap.png",
+        "q(coarse_query) over time",
+    )
+
+    save_categorical_heatmap(
+        qs_over_time[4],
+        HEATMAP_DIR / "report_choice_time_heatmap.png",
+        "q(report_choice) over time",
+    )
+
 
 
     print("\nDone.")
