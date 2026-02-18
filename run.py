@@ -131,6 +131,80 @@ def build_policies(Ncoarse):
 # -------------------------------------------------
 # Plotting
 # -------------------------------------------------
+def save_mean_heatmap(
+    qs_bar1_over_time,
+    qs_bar2_over_time,
+    env,
+    outpath: Path,
+    title="q(mean_height) over time",
+):
+    """
+    Compute distribution over M = 0.5*(bar1 + bar2)
+    and save heatmap.
+    """
+
+    T = len(qs_bar1_over_time)
+
+    # Build fine value grid (data units)
+    values = []
+    for fine_idx in range(env.Nfine):
+        tick = fine_idx // env.n_fine
+        fine_within = fine_idx % env.n_fine
+
+        lo = env.tick_values[tick]
+        hi = env.tick_values[tick + 1]
+        width = (hi - lo) / env.n_fine
+        center_val = lo + (fine_within + 0.5) * width
+        values.append(center_val)
+
+    values = np.array(values)
+
+    # Preallocate list
+    mean_dists = []
+
+    for t in range(T):
+
+        p1 = qs_bar1_over_time[t]
+        p2 = qs_bar2_over_time[t]
+
+        # Convolution (sum distribution)
+        p_sum = np.convolve(p1, p2)
+
+        # Build sum value grid
+        sum_values = np.add.outer(values, values).ravel()
+
+        # Because convolution produces sorted sums,
+        # we instead build correct sum grid directly:
+        sum_values = np.linspace(
+            values[0] + values[0],
+            values[-1] + values[-1],
+            len(p_sum)
+        )
+
+        # Now scale support for mean
+        mean_values = 0.5 * sum_values
+
+        mean_dists.append(p_sum)
+
+    M = np.stack(mean_dists, axis=1)
+
+    outpath.parent.mkdir(parents=True, exist_ok=True)
+
+    plt.figure(figsize=(10,6))
+    plt.imshow(
+        M,
+        aspect="auto",
+        origin="lower",
+        extent=[0, T, mean_values[0], mean_values[-1]],
+    )
+    plt.colorbar(label="probability")
+    plt.xlabel("time")
+    plt.ylabel("mean height (data units)")
+    plt.title(title)
+    plt.tight_layout()
+    plt.savefig(outpath, dpi=200)
+    plt.close()
+
 
 def save_probvec_png(p, outpath, title):
     p = np.asarray(p, dtype=float).ravel()
@@ -367,6 +441,14 @@ def main():
         HEATMAP_DIR / "bar2_fine_time_heatmap.png",
         title="q(bar2_fine) over time",
     )
+
+    save_mean_heatmap(
+        qs_over_time[0],
+        qs_over_time[1],
+        env,
+        HEATMAP_DIR / "mean_height_time_heatmap.png",
+    )
+
 
     # The remaining factors are categorical
     def save_categorical_heatmap(qs_over_time, outpath, title):
