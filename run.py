@@ -1,5 +1,6 @@
 # filename: run.py
 
+import yaml
 import numpy as np
 from pathlib import Path
 import json
@@ -280,9 +281,34 @@ def save_heatmap_time_state(
 def main():
 
     # -------------------------------------------------
+    # Load configuration
+    # -------------------------------------------------
+    with open("aif_config.yaml", "r") as f:
+        config = yaml.safe_load(f)
+
+    image_path = config["bargraph_path"]
+    fine_bins_per_tick = config["fine_bins_per_tick"]
+    coarse_bins_per_tick = config["coarse_bins_per_tick"]
+    inference_horizon = config["inference_horizon"]
+    gamma = config["gamma"]
+    T = config["T"]
+    seed = config["random_seed"]
+
+    output_root = Path(config["output_dir"])
+    output_root.mkdir(parents=True, exist_ok=True)
+
+    posterior_dir = output_root / "posterior_plots"
+    bar1_dir = posterior_dir / "bar1"
+    bar2_dir = posterior_dir / "bar2"
+    heatmap_dir = posterior_dir / "heatmaps"
+
+    for d in [posterior_dir, bar1_dir, bar2_dir, heatmap_dir]:
+        d.mkdir(parents=True, exist_ok=True)
+
+
+    # -------------------------------------------------
     # 1) Perception pipeline
     # -------------------------------------------------
-    image_path = "2_bar_chart_output/two_bar_chart.png"
     output_dir = Path("output_python_scripts/full_pipeline")
     output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -310,10 +336,12 @@ def main():
     env = BarChartEnv(
         bar_heights_values=bar_values[:2],
         tick_values=tick_values,
-        fine_bins_per_tick=10,
-        coarse_bins_per_tick=3,
-        seed=0,
+        fine_bins_per_tick=fine_bins_per_tick,
+        coarse_bins_per_tick=coarse_bins_per_tick,
+        seed=seed,
     )
+
+
 
     # Build fine value grid (data units)
     fine_values = []
@@ -365,12 +393,12 @@ def main():
         D=D,
         policies=policies,
         policy_len=1,
-        inference_horizon=2,  # important for binary search
+        inference_horizon=inference_horizon,  # important for binary search
         control_fac_idx=control_fac_idx,
         num_controls=num_controls,
         use_states_info_gain=True,
         use_utility=True,
-        gamma=8.0,
+        gamma=gamma,
         action_selection="deterministic",
     )
 
@@ -378,7 +406,6 @@ def main():
     # 4) Active Inference Loop
     # -------------------------------------------------
 
-    T = 6
     model_obs = [NULL, NULL, NULL]
 
     print("\n=== ACTIVE INFERENCE ===")
@@ -467,12 +494,12 @@ def main():
         # Save posterior plots
         save_probvec_png(
             qs[0],
-            Path("posterior_plots/bar1") / f"t{t:03d}.png",
+            bar1_dir / f"t{t:03d}.png",
             f"q(bar1_fine) t={t}"
         )
         save_probvec_png(
             qs[1],
-            Path("posterior_plots/bar2") / f"t{t:03d}.png",
+            bar2_dir / f"t{t:03d}.png",
             f"q(bar2_fine) t={t}"
         )
 
@@ -484,7 +511,7 @@ def main():
 
     df = pd.DataFrame(log_rows)
 
-    table_path = Path("posterior_plots") / "trajectory_log.csv"
+    table_path = posterior_dir / "trajectory_log.csv"
     df.to_csv(table_path, index=False)
 
     print("\nTrajectory table saved to:")
@@ -495,7 +522,7 @@ def main():
     # Save heatmaps
     # -------------------------------------------------
 
-    HEATMAP_DIR = Path("posterior_plots/heatmaps")
+    HEATMAP_DIR = heatmap_dir
 
     state_names = [
         "bar1_fine",

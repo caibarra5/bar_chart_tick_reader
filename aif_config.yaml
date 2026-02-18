@@ -1,5 +1,12 @@
---Indendted block
-bargraph_path: 'input_python_scripts/two_bar_chart.png'
-hidden_states_heights_resolution: 100
-observations_heights_resolution: 4
-output_dir: './very_fine_hidden_states'
+bargraph_path: "input_python_scripts/two_bar_chart.png"
+
+fine_bins_per_tick: 20
+coarse_bins_per_tick: 4
+
+inference_horizon: 2
+gamma: 8.0
+
+T: 6
+random_seed: 0
+
+output_dir: "./very_fine_hidden_states"
