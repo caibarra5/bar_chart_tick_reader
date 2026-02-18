@@ -80,24 +80,9 @@ def feedback_to_str(fb):
     return str(fb)
 
 def interpret_obs(obs):
-    o0, o1, o2 = obs
+    o0, o1, o2, o3, o4 = obs
+    return f"o0={o0}, o1={o1}, o2={o2}, o3={o3}, o4={o4}"
 
-    def region(x):
-        if x == NULL:
-            return "NULL"
-        if x == BELOW:
-            return "BELOW"
-        if x == IN:
-            return "IN"
-        if x == ABOVE:
-            return "ABOVE"
-        return str(x)
-
-    return (
-        f"o0(bar1_query)={region(o0)}, "
-        f"o1(bar2_query)={region(o1)}, "
-        f"o2(feedback)={feedback_to_str(o2)}"
-    )
 
 
 
@@ -406,7 +391,9 @@ def main():
     # 4) Active Inference Loop
     # -------------------------------------------------
 
-    model_obs = [NULL, NULL, NULL]
+    model_obs = [NULL, NULL, NULL, 0, 0]
+
+
 
     print("\n=== ACTIVE INFERENCE ===")
     print("Initial obs:", interpret_obs(model_obs))

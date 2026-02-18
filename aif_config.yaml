@@ -1,7 +1,7 @@
-bargraph_path: "bar_graph_normal/two_bar_chart.png"
+bargraph_path: "bar_graph_test_new_modalities/two_bar_chart.png"
 
-fine_bins_per_tick: 20
-coarse_bins_per_tick: 4
+fine_bins_per_tick: 12
+coarse_bins_per_tick: 3
 
 inference_horizon: 2
 gamma: 8.0
@@ -9,4 +9,4 @@ gamma: 8.0
 T: 6
 random_seed: 0
 
-output_dir: "./bar_graph_normal"
+output_dir: "./bar_graph_test_new_modalities"

@@ -87,41 +87,58 @@ class BarChartEnv:
         u_query = int(action[1])
         u_report = int(action[2])
 
+        # Observation modalities:
+        # o0: bar1 coarse ruler
+        # o1: bar2 coarse ruler
+        # o2: feedback
+        # o3: bar1 tick interval
+        # o4: bar2 tick interval
+
         o0 = NULL
         o1 = NULL
         o2 = NULL
+        o3 = 0   # tick modality uses 0 = NULL
+        o4 = 0
 
-        # --------------------------------------------
-        # Tri-state ruler for bar1
-        # --------------------------------------------
+        # --------------------------------------------------
+        # Attention to bar1
+        # --------------------------------------------------
         if u_attn == 0:
 
-            true_bin = self._fine_to_coarse(self.bar1_fine_true)
+            # Emit tick interval observation
+            true_tick1 = self.bar1_fine_true // self.n_fine
+            o3 = true_tick1 + 1
 
-            if true_bin < u_query:
+            # Coarse ruler query
+            true_coarse1 = self._fine_to_coarse(self.bar1_fine_true)
+
+            if true_coarse1 < u_query:
                 o0 = BELOW
-            elif true_bin == u_query:
+            elif true_coarse1 == u_query:
                 o0 = IN
             else:
                 o0 = ABOVE
 
-        # --------------------------------------------
-        # Tri-state ruler for bar2
-        # --------------------------------------------
+        # --------------------------------------------------
+        # Attention to bar2
+        # --------------------------------------------------
         elif u_attn == 1:
 
-            true_bin = self._fine_to_coarse(self.bar2_fine_true)
+            true_tick2 = self.bar2_fine_true // self.n_fine
+            o4 = true_tick2 + 1
 
-            if true_bin < u_query:
+            true_coarse2 = self._fine_to_coarse(self.bar2_fine_true)
+
+            if true_coarse2 < u_query:
                 o1 = BELOW
-            elif true_bin == u_query:
+            elif true_coarse2 == u_query:
                 o1 = IN
             else:
                 o1 = ABOVE
 
-        # --------------------------------------------
+        # --------------------------------------------------
         # Report average
-        # --------------------------------------------
+        # --------------------------------------------------
         elif u_attn == 2:
 
             if u_report == 0:
@@ -134,7 +151,8 @@ class BarChartEnv:
                 else:
                     o2 = NOT_CLOSE_AT_ALL
 
-        return [o0, o1, o2]
+        return [o0, o1, o2, o3, o4]
+
 
     # --------------------------------------------------------
     # Debug helper
