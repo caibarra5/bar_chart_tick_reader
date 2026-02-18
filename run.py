@@ -378,7 +378,7 @@ def main():
     # 4) Active Inference Loop
     # -------------------------------------------------
 
-    T = 12
+    T = 6
     model_obs = [NULL, NULL, NULL]
 
     print("\n=== ACTIVE INFERENCE ===")
