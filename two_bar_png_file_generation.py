@@ -19,8 +19,32 @@ output_path.mkdir(parents=True, exist_ok=True)
 output_file = "two_bar_chart.png"  # change if desired
 
 labels = ["A", "B"]
-values = [28, 62]  # <-- change manually for testing
-n_ticks = 5
+if "bar_heights" not in config:
+    raise KeyError("aif_config.yaml is missing required key: 'bar_heights'")
+
+values = config["bar_heights"]
+
+if "n_ticks" not in config:
+    raise KeyError("aif_config.yaml is missing required key: 'n_ticks'")
+
+n_ticks = config["n_ticks"]
+
+if not isinstance(values, (list, tuple)) or len(values) != 2:
+    raise ValueError(
+        "aif_config.yaml -> 'bar_heights' must be a list of exactly two numbers, e.g. [28, 62]."
+    )
+
+try:
+    values = [float(v) for v in values]
+except (TypeError, ValueError) as exc:
+    raise ValueError(
+        "aif_config.yaml -> 'bar_heights' must contain numeric values."
+    ) from exc
+
+if not isinstance(n_ticks, int) or n_ticks < 2:
+    raise ValueError(
+        "aif_config.yaml -> 'n_ticks' must be an integer >= 2."
+    )
 
 # -------------------------------------------------
 # Helper: human-friendly tick interval

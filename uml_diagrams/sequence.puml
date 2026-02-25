@@ -1,0 +1,20 @@
+@startuml
+
+title Active Inference - One Timestep
+
+participant Environment
+participant AIFAgent
+participant InferenceEngine
+participant PolicyEvaluator
+
+Environment -> AIFAgent : observation
+
+AIFAgent -> InferenceEngine : updatePosterior()
+InferenceEngine --> AIFAgent : posterior beliefs
+
+AIFAgent -> PolicyEvaluator : computeEFE()
+PolicyEvaluator --> AIFAgent : best policy
+
+AIFAgent -> Environment : action
+
+@enduml
