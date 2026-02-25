@@ -9,6 +9,7 @@ gamma: 8.0
 T: 6
 random_seed: 0
 
+# The png generation file is made in output_dir and aif inference cycle outpus the results here as well
 output_dir: "./aif_agent_runs/bar_graphs_3"
 bar_heights: [28, 1025]
 n_ticks: 5
