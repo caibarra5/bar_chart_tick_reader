@@ -21,6 +21,7 @@ test_Agent_observation_capabilities_output/
 
 # Recycle / experiments
 recycle_bin/
+deprecated/
 
 # Jupyter
 *.ipynb_checkpoints

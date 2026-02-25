@@ -1,4 +1,4 @@
-bargraph_path: "aif_agent_runs/bar_graphs_2/two_bar_chart.png"
+bargraph_path: "aif_agent_runs/bar_graphs_3/two_bar_chart.png"
 
 fine_bins_per_tick: 12
 coarse_bins_per_tick: 3
@@ -9,6 +9,6 @@ gamma: 8.0
 T: 6
 random_seed: 0
 
-output_dir: "./aif_agent_runs/bar_graphs_2"
-bar_heights: [28, 62]
+output_dir: "./aif_agent_runs/bar_graphs_3"
+bar_heights: [28, 1025]
 n_ticks: 5
