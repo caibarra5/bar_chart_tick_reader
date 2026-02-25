@@ -188,6 +188,7 @@ def save_mean_heatmap(
         aspect="auto",
         origin="lower",
         extent=[0, T, mean_values[0], mean_values[-1]],
+        cmap = 'gray_r'
     )
     plt.colorbar(label="probability")
     plt.xlabel("time")
@@ -248,6 +249,7 @@ def save_heatmap_time_state(
         origin="lower",
         interpolation="nearest",
         extent=[0, M.shape[1], values[0], values[-1]],
+        cmap = 'gray_r'
     )
     plt.colorbar(label="probability")
     plt.xlabel(xlabel)
@@ -548,7 +550,7 @@ def main():
         outpath.parent.mkdir(parents=True, exist_ok=True)
 
         plt.figure(figsize=(8,5))
-        plt.imshow(M, aspect="auto", origin="lower")
+        plt.imshow(M, aspect="auto", origin="lower", cmap = 'gray_r')
         plt.colorbar(label="probability")
         plt.xlabel("time")
         plt.ylabel("state index")
@@ -575,15 +577,9 @@ def main():
         "q(report_choice) over time",
     )
 
-    import pandas as pd
-
-    df = pd.DataFrame(log_rows)
-
-    TABLE_PATH = Path("posterior_plots") / "trajectory_log.csv"
-    df.to_csv(TABLE_PATH, index=False)
 
     print("\nTrajectory table saved to:")
-    print(TABLE_PATH.resolve())
+    print(table_path.resolve())
 
 
 

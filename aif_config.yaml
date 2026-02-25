@@ -1,4 +1,4 @@
-bargraph_path: "aif_agent_runs/bar_graphs_3/two_bar_chart.png"
+bargraph_path: "aif_agent_runs/bar_graphs_5/two_bar_chart.png"
 
 fine_bins_per_tick: 12
 coarse_bins_per_tick: 3
@@ -6,10 +6,10 @@ coarse_bins_per_tick: 3
 inference_horizon: 2
 gamma: 8.0
 
-T: 6
+T: 3
 random_seed: 0
 
 # The png generation file is made in output_dir and aif inference cycle outpus the results here as well
-output_dir: "./aif_agent_runs/bar_graphs_3"
-bar_heights: [28, 1025]
+output_dir: "./aif_agent_runs/bar_graphs_5"
+bar_heights: [28, 73]
 n_ticks: 5
