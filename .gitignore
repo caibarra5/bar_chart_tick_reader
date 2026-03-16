@@ -41,3 +41,6 @@ Thumbs.db
 # Model weights (optional but recommended)
 models/*.pth
 models/
+
+# test output dirs
+test/test_extract_chart_data_from_png/

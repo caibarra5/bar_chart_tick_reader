@@ -2091,3 +2091,110 @@ def chart_structure_quality_summary(
         json.dump(summary, f, indent=2)
 
     return summary
+
+
+# ============================================================
+# FUNCTION 20: EXTRACT STRUCTURED CHART DATA FROM PNG
+# ============================================================
+
+def extract_chart_data_from_png(
+    image_path,
+    output_dir,
+    primitives_kwargs=None,
+    ocr_kwargs=None
+):
+    """
+    High-level wrapper:
+        PNG image → structured chart data JSON
+
+    Steps:
+        1) Run full CV pipeline
+        2) Convert bar pixel heights → numeric values
+        3) Map bars to x-axis labels
+        4) Save final chart_data.json
+
+    Args:
+        image_path (str or Path)
+        output_dir (str or Path)
+
+    Returns:
+        dict
+            {
+                "bar_values": [...],
+                "tick_values": [...],
+                "bar_labels": [...],
+                "bars": {label: value}
+            }
+    """
+
+    image_path = Path(image_path)
+    output_dir = Path(output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    # --------------------------------------------------
+    # 1) Run full pipeline
+    # --------------------------------------------------
+    run_bar_chart_full_pipeline(
+        image_path=str(image_path),
+        output_dir=str(output_dir),
+        primitives_kwargs=primitives_kwargs,
+        ocr_kwargs=ocr_kwargs
+    )
+
+    # --------------------------------------------------
+    # 2) Load intermediate results
+    # --------------------------------------------------
+    ocr_json = output_dir / "ocr_data.json"
+    inference_json = output_dir / "inferred_axes_and_bars.json"
+
+    with open(inference_json, "r", encoding="utf-8") as f:
+        inference = json.load(f)
+
+    bars = inference.get("bars", [])
+
+    # --------------------------------------------------
+    # 3) Convert bars → labeled numeric values
+    # --------------------------------------------------
+    label_value_map = map_bar_heights_to_xlabels_from_jsons(
+        ocr_json_path=ocr_json,
+        inferred_json_path=inference_json
+    )
+
+    bar_labels = list(label_value_map.keys())
+    bar_values = list(label_value_map.values())
+
+    # --------------------------------------------------
+    # 4) Extract y-axis tick values
+    # --------------------------------------------------
+    with open(ocr_json, "r", encoding="utf-8") as f:
+        ocr_items = json.load(f)
+
+    tick_values = []
+
+    for it in ocr_items:
+        try:
+            val = float(it["text"])
+            tick_values.append(val)
+        except ValueError:
+            continue
+
+    tick_values = sorted(set(tick_values))
+
+    # --------------------------------------------------
+    # 5) Assemble final structured data
+    # --------------------------------------------------
+    chart_data = {
+        "image": str(image_path),
+        "bar_labels": bar_labels,
+        "bar_values": bar_values,
+        "tick_values": tick_values,
+        "num_bars": len(bar_values),
+        "bars": label_value_map
+    }
+
+    chart_json_path = output_dir / "chart_data.json"
+
+    with open(chart_json_path, "w", encoding="utf-8") as f:
+        json.dump(chart_data, f, indent=2)
+
+    return chart_data
