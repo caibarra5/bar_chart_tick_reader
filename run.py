@@ -35,21 +35,7 @@ from aif_bar_chart_reader.image_reader import (
     image_interpretation_output_to_agent,
 )
 from aif_bar_chart_reader.agent_runner import run_active_inference_loop
-
-# -------------------------------------------------
-# Utilities
-# -------------------------------------------------
-def expectation_and_variance(p, values):
-    p = np.asarray(p, dtype=float)
-    mean = np.sum(p * values)
-    var = np.sum(p * (values - mean)**2)
-    return float(mean), float(var)
-
-
-def entropy(p, eps=1e-16):
-    p = np.asarray(p, dtype=float)
-    p = np.clip(p, eps, 1.0)
-    return float(-np.sum(p * np.log(p)))
+from aif_bar_chart_reader.metrics import entropy, expectation_and_variance
 
 # -------------------------------------------------
 # Pretty printing
