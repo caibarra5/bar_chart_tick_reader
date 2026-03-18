@@ -10,7 +10,7 @@ from pymdp.agent import Agent
 # -------------------------------------------------
 # Imports (UPDATED MODEL)
 # -------------------------------------------------
-from aif_bar_chart_reader.env import (
+from aif_bar_chart_reader.model.env import (
     BarChartEnv,
     NULL,
     BELOW,
@@ -22,7 +22,7 @@ from aif_bar_chart_reader.env import (
 
 
 
-from aif_bar_chart_reader.generate_model_ABCD_params import (
+from aif_bar_chart_reader.model.generate_model_ABCD_params import (
     build_A,
     build_B,
     build_C,

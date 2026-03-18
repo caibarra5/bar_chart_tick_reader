@@ -6,7 +6,7 @@ coarse_bins_per_tick: 2
 inference_horizon: 2
 gamma: 8.0
 
-T: 3
+T: 2
 random_seed: 0
 
 # The png generation file is made in output_dir and aif inference cycle outpus the results here as well
