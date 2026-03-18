@@ -3,7 +3,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from aif_bar_chart_reader.plotting import (
+from aif_bar_chart_reader.analysis.plotting import (
     save_categorical_heatmap,
     save_heatmap_time_state,
     save_mean_heatmap,
