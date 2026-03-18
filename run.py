@@ -31,11 +31,9 @@ from module_aif_bar_reader.generate_model_ABCD_params import (
     get_dimensions,
 )
 
-from module_aif_bar_reader.py_module_Agent_observation_capabilities import (
-    run_bar_chart_full_pipeline
-)
-from module_aif_bar_reader.py_module_Agent_aif_capabilities import (
-    image_interpretation_output_to_agent
+from module_aif_bar_reader.image_reader import (
+    run_bar_chart_full_pipeline,
+    image_interpretation_output_to_agent,
 )
 
 # -------------------------------------------------
