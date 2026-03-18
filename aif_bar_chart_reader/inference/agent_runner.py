@@ -1,7 +1,4 @@
-from pathlib import Path
-
 import numpy as np
-import pandas as pd
 
 from aif_bar_chart_reader.model.env import (
     ABOVE,
@@ -20,12 +17,6 @@ from aif_bar_chart_reader.model.generate_model_ABCD_params import (
     build_C,
     build_D,
     get_dimensions,
-)
-from aif_bar_chart_reader.analysis.plotting import (
-    save_categorical_heatmap,
-    save_heatmap_time_state,
-    save_mean_heatmap,
-    save_probvec_png,
 )
 
 
@@ -47,10 +38,6 @@ def run_active_inference_loop(
     D,
     T,
     fine_values,
-    posterior_dir,
-    bar1_dir,
-    bar2_dir,
-    heatmap_dir,
     initial_obs,
     attn_meanings,
     interpret_obs,
@@ -129,83 +116,9 @@ def run_active_inference_loop(
         print("Entropy bar1:", entropy(qs[0]))
         print("Entropy bar2:", entropy(qs[1]))
 
-        save_probvec_png(
-            qs[0],
-            bar1_dir / f"t{t:03d}.png",
-            f"q(bar1_fine) t={t}",
-        )
-        save_probvec_png(
-            qs[1],
-            bar2_dir / f"t{t:03d}.png",
-            f"q(bar2_fine) t={t}",
-        )
-
         model_obs = env.step((u_attn, u_param, u_report))
 
-    df = pd.DataFrame(log_rows)
-
-    table_path = posterior_dir / "trajectory_log.csv"
-    df.to_csv(table_path, index=False)
-
-    print("\nTrajectory table saved to:")
-    print(table_path.resolve())
-
-    heatmap_dir = Path(heatmap_dir)
-
-    save_heatmap_time_state(
-        qs_over_time[0],
-        env,
-        heatmap_dir / "bar1_fine_time_heatmap.png",
-        title="q(bar1_fine) over time",
-    )
-
-    save_heatmap_time_state(
-        qs_over_time[1],
-        env,
-        heatmap_dir / "bar2_fine_time_heatmap.png",
-        title="q(bar2_fine) over time",
-    )
-
-    save_mean_heatmap(
-        qs_over_time[0],
-        qs_over_time[1],
-        env,
-        heatmap_dir / "mean_height_time_heatmap.png",
-    )
-
-    save_categorical_heatmap(
-        qs_over_time[2],
-        heatmap_dir / "attention_time_heatmap.png",
-        "q(attention) over time",
-    )
-
-    save_categorical_heatmap(
-        qs_over_time[3],
-        heatmap_dir / "coarse_query_time_heatmap.png",
-        "q(coarse_query) over time",
-    )
-
-    save_categorical_heatmap(
-        qs_over_time[4],
-        heatmap_dir / "report_choice_time_heatmap.png",
-        "q(report_choice) over time",
-    )
-
-    print("\nTrajectory table saved to:")
-    print(table_path.resolve())
-
-    print("\nDone.")
-
-    print("\nPosterior bar plots saved to:")
-    print(Path("posterior_plots/bar1").resolve())
-    print(Path("posterior_plots/bar2").resolve())
-
-    print("\nHeatmaps saved to:")
-    print(heatmap_dir.resolve())
-
     return {
-        "table_path": table_path,
-        "heatmap_dir": heatmap_dir,
         "qs_over_time": qs_over_time,
         "log_rows": log_rows,
     }

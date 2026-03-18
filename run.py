@@ -4,9 +4,16 @@ import yaml
 import numpy as np
 from pathlib import Path
 import json
+import pandas as pd
 
 from pymdp.agent import Agent
 
+from aif_bar_chart_reader.analysis.plotting import (
+    save_categorical_heatmap,
+    save_heatmap_time_state,
+    save_mean_heatmap,
+    save_probvec_png,
+)
 from aif_bar_chart_reader.inference.agent_runner import (
     ABOVE,
     BELOW,
@@ -25,6 +32,8 @@ from aif_bar_chart_reader.inference.agent_runner import (
     run_bar_chart_full_pipeline,
 )
 from aif_bar_chart_reader.inference.policies import build_policies
+
+
 from aif_bar_chart_reader.analysis.metrics import (
     entropy,
     expectation_and_variance,
@@ -182,22 +191,92 @@ def main():
     # -------------------------------------------------
     # 4) Active Inference Loop
     # -------------------------------------------------
-    run_active_inference_loop(
+    results = run_active_inference_loop(
         agent=agent,
         env=env,
         D=D,
         T=T,
         fine_values=fine_values,
-        posterior_dir=posterior_dir,
-        bar1_dir=bar1_dir,
-        bar2_dir=bar2_dir,
-        heatmap_dir=heatmap_dir,
         initial_obs=[NULL, NULL, NULL, 0, 0],
         attn_meanings=ATTN_MEANINGS,
         interpret_obs=interpret_obs,
         expectation_and_variance=expectation_and_variance,
         entropy=entropy,
     )
+
+    qs_over_time = results["qs_over_time"]
+    log_rows = results["log_rows"]
+
+    for t, qs in enumerate(zip(qs_over_time[0], qs_over_time[1])):
+        q_bar1, q_bar2 = qs
+        save_probvec_png(
+            q_bar1,
+            bar1_dir / f"t{t:03d}.png",
+            f"q(bar1_fine) t={t}",
+        )
+        save_probvec_png(
+            q_bar2,
+            bar2_dir / f"t{t:03d}.png",
+            f"q(bar2_fine) t={t}",
+        )
+
+    df = pd.DataFrame(log_rows)
+    table_path = posterior_dir / "trajectory_log.csv"
+    df.to_csv(table_path, index=False)
+
+    print("\nTrajectory table saved to:")
+    print(table_path.resolve())
+
+    save_heatmap_time_state(
+        qs_over_time[0],
+        env,
+        heatmap_dir / "bar1_fine_time_heatmap.png",
+        title="q(bar1_fine) over time",
+    )
+
+    save_heatmap_time_state(
+        qs_over_time[1],
+        env,
+        heatmap_dir / "bar2_fine_time_heatmap.png",
+        title="q(bar2_fine) over time",
+    )
+
+    save_mean_heatmap(
+        qs_over_time[0],
+        qs_over_time[1],
+        env,
+        heatmap_dir / "mean_height_time_heatmap.png",
+    )
+
+    save_categorical_heatmap(
+        qs_over_time[2],
+        heatmap_dir / "attention_time_heatmap.png",
+        "q(attention) over time",
+    )
+
+    save_categorical_heatmap(
+        qs_over_time[3],
+        heatmap_dir / "coarse_query_time_heatmap.png",
+        "q(coarse_query) over time",
+    )
+
+    save_categorical_heatmap(
+        qs_over_time[4],
+        heatmap_dir / "report_choice_time_heatmap.png",
+        "q(report_choice) over time",
+    )
+
+    print("\nTrajectory table saved to:")
+    print(table_path.resolve())
+
+    print("\nDone.")
+
+    print("\nPosterior bar plots saved to:")
+    print(Path("posterior_plots/bar1").resolve())
+    print(Path("posterior_plots/bar2").resolve())
+
+    print("\nHeatmaps saved to:")
+    print(heatmap_dir.resolve())
 
 
 if __name__ == "__main__":
