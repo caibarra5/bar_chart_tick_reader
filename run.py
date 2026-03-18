@@ -30,7 +30,7 @@ from aif_bar_chart_reader.model.generate_model_ABCD_params import (
     get_dimensions,
 )
 
-from aif_bar_chart_reader.image_reader import (
+from aif_bar_chart_reader.data.image_reader import (
     run_bar_chart_full_pipeline,
     image_interpretation_output_to_agent,
 )
