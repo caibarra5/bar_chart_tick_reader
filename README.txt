@@ -8,4 +8,4 @@ python two_bar_png_file_generator.py
 Then run the env generator, agent and inference loop:
 python run.py
 
-Most of the code is under module_aif_bar_reader/
+Most of the code is under aif_bar_chart_reader/

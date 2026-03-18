@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 # -------------------------------------------------
 sys.path.append(str(Path(__file__).resolve().parents[1]))
 
-from module_aif_bar_reader.image_reader import (
+from aif_bar_chart_reader.image_reader import (
     extract_chart_data_from_png
 )
 

@@ -11,7 +11,7 @@ from pymdp.agent import Agent
 # -------------------------------------------------
 # Imports (UPDATED MODEL)
 # -------------------------------------------------
-from module_aif_bar_reader.env import (
+from aif_bar_chart_reader.env import (
     BarChartEnv,
     NULL,
     BELOW,
@@ -23,7 +23,7 @@ from module_aif_bar_reader.env import (
 
 
 
-from module_aif_bar_reader.generate_model_ABCD_params import (
+from aif_bar_chart_reader.generate_model_ABCD_params import (
     build_A,
     build_B,
     build_C,
@@ -31,7 +31,7 @@ from module_aif_bar_reader.generate_model_ABCD_params import (
     get_dimensions,
 )
 
-from module_aif_bar_reader.image_reader import (
+from aif_bar_chart_reader.image_reader import (
     run_bar_chart_full_pipeline,
     image_interpretation_output_to_agent,
 )
