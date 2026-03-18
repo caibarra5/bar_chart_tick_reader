@@ -9,4 +9,7 @@ The two bar heights can be specified in the config file.
 Then run the env generator, agent and inference loop:
 python run.py
 
+Alternatively, one can run full_pipeline_run.py to both create the png file reason about the bar graph:
+python full_pipeline_run.py
+
 The module for aif inference is aif_bar_chart_reader/
