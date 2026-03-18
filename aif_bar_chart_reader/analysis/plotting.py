@@ -127,6 +127,55 @@ def save_heatmap_time_state(
     plt.close()
 
 
+def save_heatmap_time_coarse(
+    qs_over_time,
+    env,
+    outpath: Path,
+    title: str,
+    xlabel: str = "time",
+    ylabel: str = "query value (data units)",
+):
+    """
+    qs_over_time: list of (Ncoarse,) vectors
+    env: BarChartEnv instance (needed for coarse-bin value mapping)
+    """
+
+    M = np.stack(qs_over_time, axis=1)
+
+    values = []
+    for coarse_idx in range(env.Ncoarse):
+        tick = coarse_idx // env.n_coarse
+        coarse_within = coarse_idx % env.n_coarse
+
+        lo = env.tick_values[tick]
+        hi = env.tick_values[tick + 1]
+
+        width = (hi - lo) / env.n_coarse
+        center_val = lo + (coarse_within + 0.5) * width
+        values.append(center_val)
+
+    values = np.array(values)
+
+    outpath.parent.mkdir(parents=True, exist_ok=True)
+
+    plt.figure(figsize=(10, 6))
+    plt.imshow(
+        M,
+        aspect="auto",
+        origin="lower",
+        interpolation="nearest",
+        extent=[0, M.shape[1], values[0], values[-1]],
+        cmap="gray_r",
+    )
+    plt.colorbar(label="probability")
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.title(title)
+    plt.tight_layout()
+    plt.savefig(outpath, dpi=200)
+    plt.close()
+
+
 def save_categorical_heatmap(qs_over_time, outpath, title):
     M = np.stack(qs_over_time, axis=1)
     outpath.parent.mkdir(parents=True, exist_ok=True)

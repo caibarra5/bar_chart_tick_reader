@@ -10,6 +10,7 @@ from pymdp.agent import Agent
 
 from aif_bar_chart_reader.analysis.plotting import (
     save_categorical_heatmap,
+    save_heatmap_time_coarse,
     save_heatmap_time_state,
     save_mean_heatmap,
     save_probvec_png,
@@ -254,10 +255,11 @@ def main():
         "q(attention) over time",
     )
 
-    save_categorical_heatmap(
+    save_heatmap_time_coarse(
         qs_over_time[3],
+        env,
         heatmap_dir / "coarse_query_time_heatmap.png",
-        "q(coarse_query) over time",
+        title="q(coarse_query) over time",
     )
 
     save_categorical_heatmap(
