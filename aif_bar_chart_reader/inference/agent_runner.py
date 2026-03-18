@@ -3,6 +3,22 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+from aif_bar_chart_reader.model.env import (
+    ABOVE,
+    BELOW,
+    IN,
+    NOT_CLOSE_AT_ALL,
+    NULL,
+    VERY_CLOSE,
+    BarChartEnv,
+)
+from aif_bar_chart_reader.model.generate_model_ABCD_params import (
+    build_A,
+    build_B,
+    build_C,
+    build_D,
+    get_dimensions,
+)
 from aif_bar_chart_reader.analysis.plotting import (
     save_categorical_heatmap,
     save_heatmap_time_state,

@@ -7,34 +7,25 @@ import json
 
 from pymdp.agent import Agent
 
-# -------------------------------------------------
-# Imports (UPDATED MODEL)
-# -------------------------------------------------
-from aif_bar_chart_reader.model.env import (
-    BarChartEnv,
-    NULL,
+from aif_bar_chart_reader.data.image_reader import (
+    run_bar_chart_full_pipeline,
+    image_interpretation_output_to_agent,
+)
+from aif_bar_chart_reader.inference.agent_runner import (
+    ABOVE,
     BELOW,
     IN,
-    ABOVE,
     NOT_CLOSE_AT_ALL,
+    NULL,
     VERY_CLOSE,
-)
-
-
-
-from aif_bar_chart_reader.model.generate_model_ABCD_params import (
+    BarChartEnv,
     build_A,
     build_B,
     build_C,
     build_D,
     get_dimensions,
+    run_active_inference_loop,
 )
-
-from aif_bar_chart_reader.data.image_reader import (
-    run_bar_chart_full_pipeline,
-    image_interpretation_output_to_agent,
-)
-from aif_bar_chart_reader.inference.agent_runner import run_active_inference_loop
 from aif_bar_chart_reader.inference.policies import build_policies
 from aif_bar_chart_reader.analysis.metrics import (
     entropy,
