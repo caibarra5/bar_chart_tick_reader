@@ -34,12 +34,7 @@ from aif_bar_chart_reader.image_reader import (
     run_bar_chart_full_pipeline,
     image_interpretation_output_to_agent,
 )
-from aif_bar_chart_reader.plotting import (
-    save_categorical_heatmap,
-    save_heatmap_time_state,
-    save_mean_heatmap,
-    save_probvec_png,
-)
+from aif_bar_chart_reader.agent_runner import run_active_inference_loop
 
 # -------------------------------------------------
 # Utilities
@@ -254,191 +249,24 @@ def main():
     # -------------------------------------------------
     # 4) Active Inference Loop
     # -------------------------------------------------
-
-    model_obs = [NULL, NULL, NULL, 0, 0]
-
-
-
-    print("\n=== ACTIVE INFERENCE ===")
-    print("Initial obs:", interpret_obs(model_obs))
-
-    # storage for heatmaps
-    qs_over_time = [[] for _ in range(len(D))]
-
-    log_rows = []
-
-    for t in range(T):
-
-        print(f"\n--- timestep {t} ---")
-        print("Observation:", interpret_obs(model_obs))
-
-        qs = agent.infer_states(model_obs)
-
-        # --- Entropies ---
-        entropy_bar1 = entropy(qs[0])
-        entropy_bar2 = entropy(qs[1])
-
-        # --- Expectations ---
-        E_bar1, _ = expectation_and_variance(qs[0], fine_values)
-        E_bar2, _ = expectation_and_variance(qs[1], fine_values)
-
-        # --- Mean distribution via convolution ---
-        p_sum = np.convolve(qs[0], qs[1])
-
-        # Build sum value grid
-        sum_values = np.linspace(
-            fine_values[0] + fine_values[0],
-            fine_values[-1] + fine_values[-1],
-            len(p_sum)
-        )
-
-        mean_values = 0.5 * sum_values
-
-        # Normalize (numerical safety)
-        p_sum = p_sum / p_sum.sum()
-
-        entropy_mean = entropy(p_sum)
-        E_mean, Var_mean = expectation_and_variance(p_sum, mean_values)
-
-
-        for i, q in enumerate(qs):
-            check_probvec(q, f"qs[{i}]")
-
-        agent.infer_policies()
-        chosen = agent.sample_action()
-
-
-        u_attn = int(chosen[2])
-        u_param = int(chosen[3])
-        u_report = int(chosen[4])
-
-        log_rows.append({
-            "timestep": t,
-            "observation": interpret_obs(model_obs),
-            "action_attention": ATTN_MEANINGS[u_attn],
-            "action_query_param": u_param,
-            "action_report_choice": u_report,
-            "entropy_bar1": entropy_bar1,
-            "entropy_bar2": entropy_bar2,
-            "entropy_mean": entropy_mean,
-            "E_bar1": E_bar1,
-            "E_bar2": E_bar2,
-            "E_mean": E_mean,
-            "Var_mean": Var_mean,
-        })
-
-
-        print("Action:", ATTN_MEANINGS[u_attn], "param=", u_param)
-
-        # Clamp control states
-        qs[2] = onehot(u_attn, 3)
-        qs[3] = onehot(u_param, len(qs[3]))
-        agent.qs = qs
-
-        for f in range(len(qs)):
-            qs_over_time[f].append(qs[f].copy())
-
-
-        print("Entropy bar1:", entropy(qs[0]))
-        print("Entropy bar2:", entropy(qs[1]))
-
-        # Save posterior plots
-        save_probvec_png(
-            qs[0],
-            bar1_dir / f"t{t:03d}.png",
-            f"q(bar1_fine) t={t}"
-        )
-        save_probvec_png(
-            qs[1],
-            bar2_dir / f"t{t:03d}.png",
-            f"q(bar2_fine) t={t}"
-        )
-
-
-        # Step environment
-        model_obs = env.step((u_attn, u_param, u_report))
-
-    import pandas as pd
-
-    df = pd.DataFrame(log_rows)
-
-    table_path = posterior_dir / "trajectory_log.csv"
-    df.to_csv(table_path, index=False)
-
-    print("\nTrajectory table saved to:")
-    print(table_path.resolve())
-
-
-    # -------------------------------------------------
-    # Save heatmaps
-    # -------------------------------------------------
-
-    HEATMAP_DIR = heatmap_dir
-
-    state_names = [
-        "bar1_fine",
-        "bar2_fine",
-        "attention",
-        "query_param",
-        "report_choice",
-    ]
-
-    # Bar height states use value-mapped heatmap
-    save_heatmap_time_state(
-        qs_over_time[0],
-        env,
-        HEATMAP_DIR / "bar1_fine_time_heatmap.png",
-        title="q(bar1_fine) over time",
+    run_active_inference_loop(
+        agent=agent,
+        env=env,
+        D=D,
+        T=T,
+        fine_values=fine_values,
+        posterior_dir=posterior_dir,
+        bar1_dir=bar1_dir,
+        bar2_dir=bar2_dir,
+        heatmap_dir=heatmap_dir,
+        initial_obs=[NULL, NULL, NULL, 0, 0],
+        attn_meanings=ATTN_MEANINGS,
+        interpret_obs=interpret_obs,
+        expectation_and_variance=expectation_and_variance,
+        entropy=entropy,
+        check_probvec=check_probvec,
+        onehot=onehot,
     )
-
-    save_heatmap_time_state(
-        qs_over_time[1],
-        env,
-        HEATMAP_DIR / "bar2_fine_time_heatmap.png",
-        title="q(bar2_fine) over time",
-    )
-
-    save_mean_heatmap(
-        qs_over_time[0],
-        qs_over_time[1],
-        env,
-        HEATMAP_DIR / "mean_height_time_heatmap.png",
-    )
-
-
-    save_categorical_heatmap(
-        qs_over_time[2],
-        HEATMAP_DIR / "attention_time_heatmap.png",
-        "q(attention) over time",
-    )
-
-    save_categorical_heatmap(
-        qs_over_time[3],
-        HEATMAP_DIR / "coarse_query_time_heatmap.png",
-        "q(coarse_query) over time",
-    )
-
-    save_categorical_heatmap(
-        qs_over_time[4],
-        HEATMAP_DIR / "report_choice_time_heatmap.png",
-        "q(report_choice) over time",
-    )
-
-
-    print("\nTrajectory table saved to:")
-    print(table_path.resolve())
-
-
-
-
-    print("\nDone.")
-
-    print("\nPosterior bar plots saved to:")
-    print(Path("posterior_plots/bar1").resolve())
-    print(Path("posterior_plots/bar2").resolve())
-
-    print("\nHeatmaps saved to:")
-    print(HEATMAP_DIR.resolve())
 
 
 if __name__ == "__main__":
