@@ -98,16 +98,16 @@ def main():
     # -------------------------------------------------
     # 1) Perception pipeline
     # -------------------------------------------------
-    output_dir = Path("output_python_scripts/full_pipeline")
-    output_dir.mkdir(parents=True, exist_ok=True)
+    cv_debugging_dir = output_root / "cv_debugging_files"
+    cv_debugging_dir.mkdir(parents=True, exist_ok=True)
 
     run_bar_chart_full_pipeline(
         image_path=image_path,
-        output_dir=str(output_dir)
+        output_dir=str(cv_debugging_dir)
     )
 
-    axes_and_bars_path = output_dir / "inferred_axes_and_bars.json"
-    ocr_path = output_dir / "ocr_data.json"
+    axes_and_bars_path = cv_debugging_dir / "inferred_axes_and_bars.json"
+    ocr_path = cv_debugging_dir / "ocr_data.json"
 
     bar_values, tick_values, n_ticks, n_bars = \
         image_interpretation_output_to_agent(

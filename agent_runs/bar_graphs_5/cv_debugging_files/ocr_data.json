@@ -1,0 +1,91 @@
+[
+  {
+    "text": "Two-Bar",
+    "left": 810,
+    "top": 46,
+    "width": 196,
+    "height": 37,
+    "confidence": 91.0
+  },
+  {
+    "text": "Chart",
+    "left": 1024,
+    "top": 44,
+    "width": 134,
+    "height": 39,
+    "confidence": 96.0
+  },
+  {
+    "text": "100",
+    "left": 109,
+    "top": 90,
+    "width": 72,
+    "height": 32,
+    "confidence": 95.0
+  },
+  {
+    "text": "80",
+    "left": 134,
+    "top": 286,
+    "width": 46,
+    "height": 32,
+    "confidence": 96.0
+  },
+  {
+    "text": "60",
+    "left": 134,
+    "top": 481,
+    "width": 46,
+    "height": 32,
+    "confidence": 96.0
+  },
+  {
+    "text": "40",
+    "left": 133,
+    "top": 677,
+    "width": 47,
+    "height": 32,
+    "confidence": 64.0
+  },
+  {
+    "text": "20",
+    "left": 134,
+    "top": 872,
+    "width": 47,
+    "height": 32,
+    "confidence": 96.0
+  },
+  {
+    "text": "0",
+    "left": 161,
+    "top": 1068,
+    "width": 21,
+    "height": 32,
+    "confidence": 91.0
+  },
+  {
+    "text": "A",
+    "left": 580,
+    "top": 1114,
+    "width": 28,
+    "height": 30,
+    "confidence": 95.0
+  },
+  {
+    "text": "B",
+    "left": 1363,
+    "top": 1114,
+    "width": 22,
+    "height": 30,
+    "confidence": 92.0
+  },
+  {
+    "text": "Data Value",
+    "left": 39,
+    "top": 476,
+    "width": 48,
+    "height": 237,
+    "confidence": 100.0,
+    "orientation": "vertical"
+  }
+]

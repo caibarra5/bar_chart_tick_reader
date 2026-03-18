@@ -1,0 +1,198 @@
+[
+  {
+    "type": "line",
+    "orientation": "horizontal",
+    "start": [
+      200,
+      104
+    ],
+    "end": [
+      1755,
+      104
+    ],
+    "length": 1555.0,
+    "angle_deg": 0.0
+  },
+  {
+    "type": "line",
+    "orientation": "horizontal",
+    "start": [
+      200,
+      108
+    ],
+    "end": [
+      1757,
+      108
+    ],
+    "length": 1557.0,
+    "angle_deg": 0.0
+  },
+  {
+    "type": "line",
+    "orientation": "horizontal",
+    "start": [
+      200,
+      1086
+    ],
+    "end": [
+      1755,
+      1086
+    ],
+    "length": 1555.0,
+    "angle_deg": 0.0
+  },
+  {
+    "type": "line",
+    "orientation": "horizontal",
+    "start": [
+      200,
+      1082
+    ],
+    "end": [
+      1757,
+      1082
+    ],
+    "length": 1557.0,
+    "angle_deg": 0.0
+  },
+  {
+    "type": "line",
+    "orientation": "vertical",
+    "start": [
+      1753,
+      1081
+    ],
+    "end": [
+      1753,
+      109
+    ],
+    "length": 972.0,
+    "angle_deg": -90.0
+  },
+  {
+    "type": "line",
+    "orientation": "vertical",
+    "start": [
+      211,
+      1081
+    ],
+    "end": [
+      211,
+      109
+    ],
+    "length": 972.0,
+    "angle_deg": -90.0
+  },
+  {
+    "type": "line",
+    "orientation": "vertical",
+    "start": [
+      1757,
+      1084
+    ],
+    "end": [
+      1757,
+      106
+    ],
+    "length": 978.0,
+    "angle_deg": -90.0
+  },
+  {
+    "type": "line",
+    "orientation": "vertical",
+    "start": [
+      215,
+      1081
+    ],
+    "end": [
+      215,
+      109
+    ],
+    "length": 972.0,
+    "angle_deg": -90.0
+  },
+  {
+    "type": "line",
+    "orientation": "vertical",
+    "start": [
+      1684,
+      1080
+    ],
+    "end": [
+      1684,
+      370
+    ],
+    "length": 710.0,
+    "angle_deg": -90.0
+  },
+  {
+    "type": "line",
+    "orientation": "vertical",
+    "start": [
+      1061,
+      1081
+    ],
+    "end": [
+      1061,
+      371
+    ],
+    "length": 710.0,
+    "angle_deg": -90.0
+  },
+  {
+    "type": "line",
+    "orientation": "horizontal",
+    "start": [
+      284,
+      809
+    ],
+    "end": [
+      904,
+      809
+    ],
+    "length": 620.0,
+    "angle_deg": 0.0
+  },
+  {
+    "type": "line",
+    "orientation": "horizontal",
+    "start": [
+      1063,
+      369
+    ],
+    "end": [
+      1683,
+      369
+    ],
+    "length": 620.0,
+    "angle_deg": 0.0
+  },
+  {
+    "type": "line",
+    "orientation": "vertical",
+    "start": [
+      905,
+      1080
+    ],
+    "end": [
+      905,
+      810
+    ],
+    "length": 270.0,
+    "angle_deg": -90.0
+  },
+  {
+    "type": "line",
+    "orientation": "vertical",
+    "start": [
+      282,
+      1081
+    ],
+    "end": [
+      282,
+      811
+    ],
+    "length": 270.0,
+    "angle_deg": -90.0
+  }
+]
