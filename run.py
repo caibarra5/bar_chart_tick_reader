@@ -9,6 +9,8 @@ import pandas as pd
 from pymdp.agent import Agent
 
 from aif_bar_chart_reader.analysis.plotting import (
+    save_attention_line_plot,
+    save_report_choice_heatmap,
     save_categorical_heatmap,
     save_heatmap_time_coarse,
     save_heatmap_time_state,
@@ -249,9 +251,14 @@ def main():
         heatmap_dir / "mean_height_time_heatmap.png",
     )
 
-    save_categorical_heatmap(
+    save_attention_line_plot(
         qs_over_time[2],
         heatmap_dir / "attention_time_heatmap.png",
+        [
+            ATTN_MEANINGS[0],
+            ATTN_MEANINGS[1],
+            ATTN_MEANINGS[2],
+        ],
         "q(attention) over time",
     )
 
@@ -262,10 +269,11 @@ def main():
         title="q(coarse_query) over time",
     )
 
-    save_categorical_heatmap(
+    save_report_choice_heatmap(
         qs_over_time[4],
+        env,
         heatmap_dir / "report_choice_time_heatmap.png",
-        "q(report_choice) over time",
+        title="q(report_choice) over time",
     )
 
     print("\nTrajectory table saved to:")
