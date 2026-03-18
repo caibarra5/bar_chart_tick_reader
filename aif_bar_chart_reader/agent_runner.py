@@ -11,6 +11,18 @@ from aif_bar_chart_reader.plotting import (
 )
 
 
+def check_probvec(p, name):
+    p = np.asarray(p, dtype=float)
+    if not (np.all(np.isfinite(p)) and abs(p.sum() - 1.0) < 1e-3):
+        raise ValueError(f"Bad probvec {name}")
+
+
+def onehot(i, n, dtype=np.float32):
+    v = np.zeros(n, dtype=dtype)
+    v[int(i)] = 1.0
+    return v
+
+
 def run_active_inference_loop(
     agent,
     env,
@@ -26,8 +38,6 @@ def run_active_inference_loop(
     interpret_obs,
     expectation_and_variance,
     entropy,
-    check_probvec,
-    onehot,
 ):
     model_obs = list(initial_obs)
 

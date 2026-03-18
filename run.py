@@ -51,16 +51,6 @@ def entropy(p, eps=1e-16):
     p = np.clip(p, eps, 1.0)
     return float(-np.sum(p * np.log(p)))
 
-def check_probvec(p, name):
-    p = np.asarray(p, dtype=float)
-    if not (np.all(np.isfinite(p)) and abs(p.sum() - 1.0) < 1e-3):
-        raise ValueError(f"Bad probvec {name}")
-
-def onehot(i, n, dtype=np.float32):
-    v = np.zeros(n, dtype=dtype)
-    v[int(i)] = 1.0
-    return v
-
 # -------------------------------------------------
 # Pretty printing
 # -------------------------------------------------
@@ -264,8 +254,6 @@ def main():
         interpret_obs=interpret_obs,
         expectation_and_variance=expectation_and_variance,
         entropy=entropy,
-        check_probvec=check_probvec,
-        onehot=onehot,
     )
 
 
