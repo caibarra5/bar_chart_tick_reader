@@ -11,6 +11,8 @@ from aif_bar_chart_reader.model.env import (
     NULL,
     VERY_CLOSE,
     BarChartEnv,
+    image_interpretation_output_to_agent,
+    run_bar_chart_full_pipeline,
 )
 from aif_bar_chart_reader.model.generate_model_ABCD_params import (
     build_A,

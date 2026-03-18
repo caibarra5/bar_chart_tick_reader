@@ -7,10 +7,6 @@ import json
 
 from pymdp.agent import Agent
 
-from aif_bar_chart_reader.data.image_reader import (
-    run_bar_chart_full_pipeline,
-    image_interpretation_output_to_agent,
-)
 from aif_bar_chart_reader.inference.agent_runner import (
     ABOVE,
     BELOW,
@@ -24,7 +20,9 @@ from aif_bar_chart_reader.inference.agent_runner import (
     build_C,
     build_D,
     get_dimensions,
+    image_interpretation_output_to_agent,
     run_active_inference_loop,
+    run_bar_chart_full_pipeline,
 )
 from aif_bar_chart_reader.inference.policies import build_policies
 from aif_bar_chart_reader.analysis.metrics import (

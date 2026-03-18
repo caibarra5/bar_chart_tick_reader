@@ -1,6 +1,11 @@
 # filename: env.py
 import numpy as np
 
+from aif_bar_chart_reader.data.image_reader import (
+    image_interpretation_output_to_agent,
+    run_bar_chart_full_pipeline,
+)
+
 # Observation codes (must match A matrix)
 NULL  = 0
 BELOW = 1
