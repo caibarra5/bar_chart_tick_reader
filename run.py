@@ -35,6 +35,7 @@ from aif_bar_chart_reader.data.image_reader import (
     image_interpretation_output_to_agent,
 )
 from aif_bar_chart_reader.inference.agent_runner import run_active_inference_loop
+from aif_bar_chart_reader.inference.policies import build_policies
 from aif_bar_chart_reader.analysis.metrics import (
     entropy,
     expectation_and_variance,
@@ -59,42 +60,6 @@ def feedback_to_str(fb):
 def interpret_obs(obs):
     o0, o1, o2, o3, o4 = obs
     return f"o0={o0}, o1={o1}, o2={o2}, o3={o3}, o4={o4}"
-
-
-
-
-# -------------------------------------------------
-# Policy Builder (PARTITION MODEL)
-# -------------------------------------------------
-
-def build_policies(Ncoarse):
-
-    policies = []
-    n_factors = 5
-
-    # query bar1
-    for q in range(Ncoarse):
-        pol = np.zeros((1, n_factors), dtype=int)
-        pol[0, 2] = 0
-        pol[0, 3] = q
-        policies.append(pol)
-
-    # query bar2
-    for q in range(Ncoarse):
-        pol = np.zeros((1, n_factors), dtype=int)
-        pol[0, 2] = 1
-        pol[0, 3] = q
-        policies.append(pol)
-
-    # report
-    for rep in range(Ncoarse + 1):
-        pol = np.zeros((1, n_factors), dtype=int)
-        pol[0, 2] = 2
-        pol[0, 4] = rep
-        policies.append(pol)
-
-    return policies
-
 
 
 # -------------------------------------------------

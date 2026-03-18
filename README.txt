@@ -4,8 +4,9 @@ aif_config.yaml
 
 Second, run the test bar graph generator:
 python two_bar_png_file_generator.py
+The two bar heights can be specified in the config file.
 
 Then run the env generator, agent and inference loop:
 python run.py
 
-Most of the code is under aif_bar_chart_reader/
+The module for aif inference is aif_bar_chart_reader/
