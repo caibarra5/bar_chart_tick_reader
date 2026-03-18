@@ -4,7 +4,6 @@ import yaml
 import numpy as np
 from pathlib import Path
 import json
-import matplotlib.pyplot as plt
 
 from pymdp.agent import Agent
 
@@ -34,6 +33,12 @@ from aif_bar_chart_reader.generate_model_ABCD_params import (
 from aif_bar_chart_reader.image_reader import (
     run_bar_chart_full_pipeline,
     image_interpretation_output_to_agent,
+)
+from aif_bar_chart_reader.plotting import (
+    save_categorical_heatmap,
+    save_heatmap_time_state,
+    save_mean_heatmap,
+    save_probvec_png,
 )
 
 # -------------------------------------------------
@@ -115,147 +120,6 @@ def build_policies(Ncoarse):
         policies.append(pol)
 
     return policies
-
-
-
-# -------------------------------------------------
-# Plotting
-# -------------------------------------------------
-def save_mean_heatmap(
-    qs_bar1_over_time,
-    qs_bar2_over_time,
-    env,
-    outpath: Path,
-    title="q(mean_height) over time",
-):
-    """
-    Compute distribution over M = 0.5*(bar1 + bar2)
-    and save heatmap.
-    """
-
-    T = len(qs_bar1_over_time)
-
-    # Build fine value grid (data units)
-    values = []
-    for fine_idx in range(env.Nfine):
-        tick = fine_idx // env.n_fine
-        fine_within = fine_idx % env.n_fine
-
-        lo = env.tick_values[tick]
-        hi = env.tick_values[tick + 1]
-        width = (hi - lo) / env.n_fine
-        center_val = lo + (fine_within + 0.5) * width
-        values.append(center_val)
-
-    values = np.array(values)
-
-    # Preallocate list
-    mean_dists = []
-
-    for t in range(T):
-
-        p1 = qs_bar1_over_time[t]
-        p2 = qs_bar2_over_time[t]
-
-        # Convolution (sum distribution)
-        p_sum = np.convolve(p1, p2)
-
-        # Build sum value grid
-        sum_values = np.add.outer(values, values).ravel()
-
-        # Because convolution produces sorted sums,
-        # we instead build correct sum grid directly:
-        sum_values = np.linspace(
-            values[0] + values[0],
-            values[-1] + values[-1],
-            len(p_sum)
-        )
-
-        # Now scale support for mean
-        mean_values = 0.5 * sum_values
-
-        mean_dists.append(p_sum)
-
-    M = np.stack(mean_dists, axis=1)
-
-    outpath.parent.mkdir(parents=True, exist_ok=True)
-
-    plt.figure(figsize=(10,6))
-    plt.imshow(
-        M,
-        aspect="auto",
-        origin="lower",
-        extent=[0, T, mean_values[0], mean_values[-1]],
-        cmap = 'gray_r'
-    )
-    plt.colorbar(label="probability")
-    plt.xlabel("time")
-    plt.ylabel("mean height (data units)")
-    plt.title(title)
-    plt.tight_layout()
-    plt.savefig(outpath, dpi=200)
-    plt.close()
-
-
-def save_probvec_png(p, outpath, title):
-    p = np.asarray(p, dtype=float).ravel()
-    outpath.parent.mkdir(parents=True, exist_ok=True)
-    plt.figure()
-    plt.bar(np.arange(len(p)), p)
-    plt.title(title)
-    plt.ylim(0.0, 1.0)
-    plt.tight_layout()
-    plt.savefig(outpath, dpi=200)
-    plt.close()
-
-def save_heatmap_time_state(
-    qs_over_time,
-    env,
-    outpath: Path,
-    title: str,
-    xlabel: str = "time",
-    ylabel: str = "bar height (data units)",
-):
-    """
-    qs_over_time: list of (Nfine,) vectors
-    env: BarChartEnv instance (needed for value mapping)
-    """
-
-    M = np.stack(qs_over_time, axis=1)  # shape: (Nfine, T)
-
-    # Map fine indices → data values (bin centers)
-    values = []
-    for fine_idx in range(env.Nfine):
-        tick = fine_idx // env.n_fine
-        fine_within = fine_idx % env.n_fine
-
-        lo = env.tick_values[tick]
-        hi = env.tick_values[tick + 1]
-
-        width = (hi - lo) / env.n_fine
-        center_val = lo + (fine_within + 0.5) * width
-        values.append(center_val)
-
-    values = np.array(values)
-
-    outpath.parent.mkdir(parents=True, exist_ok=True)
-
-    plt.figure(figsize=(10, 6))
-    plt.imshow(
-        M,
-        aspect="auto",
-        origin="lower",
-        interpolation="nearest",
-        extent=[0, M.shape[1], values[0], values[-1]],
-        cmap = 'gray_r'
-    )
-    plt.colorbar(label="probability")
-    plt.xlabel(xlabel)
-    plt.ylabel(ylabel)
-    plt.title(title)
-    plt.tight_layout()
-    plt.savefig(outpath, dpi=200)
-    plt.close()
 
 
 
@@ -541,21 +405,6 @@ def main():
         HEATMAP_DIR / "mean_height_time_heatmap.png",
     )
 
-
-    # The remaining factors are categorical
-    def save_categorical_heatmap(qs_over_time, outpath, title):
-        M = np.stack(qs_over_time, axis=1)
-        outpath.parent.mkdir(parents=True, exist_ok=True)
-
-        plt.figure(figsize=(8,5))
-        plt.imshow(M, aspect="auto", origin="lower", cmap = 'gray_r')
-        plt.colorbar(label="probability")
-        plt.xlabel("time")
-        plt.ylabel("state index")
-        plt.title(title)
-        plt.tight_layout()
-        plt.savefig(outpath, dpi=200)
-        plt.close()
 
     save_categorical_heatmap(
         qs_over_time[2],
