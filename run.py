@@ -34,7 +34,7 @@ from aif_bar_chart_reader.image_reader import (
     run_bar_chart_full_pipeline,
     image_interpretation_output_to_agent,
 )
-from aif_bar_chart_reader.agent_runner import run_active_inference_loop
+from aif_bar_chart_reader.inference.agent_runner import run_active_inference_loop
 from aif_bar_chart_reader.analysis.metrics import (
     entropy,
     expectation_and_variance,
