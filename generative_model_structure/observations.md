@@ -1,0 +1,9 @@
+## Observations
+
+| Modality              | Modality States (Python Dictionary Representation)                                             | Notes |
+|----------------------|----------------------------------------------------------------|------|
+| coarse_ruler_bar1    | {0: "null", 1: "coarse_bin_1", ..., Nc: "coarse_bin_Nc"}        | Only informative if attn = y-axis AND prev_attn = bar1. This represents some location in the y-axis the observer is looking at. |
+| coarse_ruler_bar2    | {0: "null", 1: "coarse_bin_1", ..., Nc: "coarse_bin_Nc"}        | Only informative if attn = y-axis AND prev_attn = bar2. This represents some location in the y-axis the observer is looking at. |
+| tick_interval_bar1   | {0: "null", 1: "tick_1", ..., n_ticks: "tick_n"}                | This observation is deterministic and obtains a non-null value whenever coarse_ruler_bar1 is observed. The tick interval is a separate modality from the coarse ruler to justify the notion that a person/the agent sees the data values of the tick interval the height of the bar falls into when looking at the y-axis. |
+| tick_interval_bar2   | {0: "null", 1: "tick_1", ..., n_ticks: "tick_n"}                | This observation modality is deterministic and obtains a non-null value whenever coarse_ruler_bar2 is observed. It has the same justification as tick_interval_bar1 for being its own modality. |
+| report_avg_feedback  | {0: "null", 1: "not_close_at_all", 2: "close", 3: "very_close"} | Only informative when attn = feedback. Prev_attn can be anything (invariant to this controlled state). The midpoint of the coarse bin from avg_coarse_reported is given to the environment, and the avg is used to return either not_close_at_all, close, or very_close if the midpoint is not in the same interval, in the same interval, and in the same coarse bin as the true avg respectively. |
