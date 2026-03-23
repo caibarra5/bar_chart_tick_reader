@@ -46,3 +46,9 @@ models/
 test/test_extract_chart_data_from_png/
 
 assets/*.Identifier
+
+# track the contents of assets (png rules from before ignored this png as well)
+*.png
+!assets/
+!assets/*.png
+
