@@ -44,3 +44,5 @@ models/
 
 # test output dirs
 test/test_extract_chart_data_from_png/
+
+assets/*.Identifier
