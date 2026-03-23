@@ -72,7 +72,7 @@ def main():
     # -------------------------------------------------
     # Load configuration
     # -------------------------------------------------
-    with open("aif_config.yaml", "r") as f:
+    with open("config.yaml", "r") as f:
         config = yaml.safe_load(f)
 
     image_path = config["bargraph_path"]
