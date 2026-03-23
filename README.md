@@ -1,6 +1,6 @@
 ## Overview
 
-AIF (Active Inference Framework) is a probabilistic modeling approach based on Bayesian inference, where an agent continuously updates beliefs about hidden states of the world using observations and selects actions that minimize expected uncertainty and maximize preferred outcomes.
+AIF (Active Inference) is a probabilistic modeling approach based on Bayesian inference, where an agent continuously updates beliefs about hidden states of the world using observations and selects actions that minimize expected uncertainty and maximize preferred outcomes.
 
 In this repository, the code implements a pipeline that takes visual input (bar charts), processes it through structured modules, and applies inference mechanisms to extract meaningful information (e.g., values, structure, or relationships). The system separates data ingestion, inference, and output generation into distinct components, reflecting a layered design where perception, belief updating, and decision-like outputs are handled in a modular and interpretable way.
 
